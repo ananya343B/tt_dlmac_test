@@ -47,8 +47,8 @@ module reg_wrapper(
 reg [1:0] state;
 reg [15:0] temp_data;
 
-  always @(posedge clk or negedge rst_n) begin
-    if (!rst_n) begin
+	always @(posedge clk or negedge rst_n) begin
+		if (rst_n == 1'b1) begin
         state <= 2'b00; 
         reg_a <= 16'b0;
         reg_b <= 16'b0;
@@ -178,7 +178,7 @@ module dlfloat_adder(input clk, input [15:0]a1, input [15:0]b1, output logic[15:
   	
    
     
-  always@(*) begin
+  always_latch begin
         //stage 1
 	     e1_80 = a1[14:9];
 	     e2_80 = b1[14:9];
