@@ -80,7 +80,7 @@ async def test_project(dut):
     
     # The following assersion is just an example of how to check the output values.
     # Change it to match the actual expected output of your module:
-    await ClockCycles(dut.clk, 3)
+    #await ClockCycles(dut.clk, 3)
 
     assert dut.uo_out.value == 65
     await ClockCycles(dut.clk, 1)
