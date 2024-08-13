@@ -178,7 +178,7 @@ module dlfloat_adder(input clk, input [15:0]a1, input [15:0]b1, output logic[15:
   	
    
     
-	always@(a1 or b1) begin
+	always_latch@(a1 or b1) begin
         //stage 1
 	     e1_80 = a1[14:9];
 	     e2_80 = b1[14:9];
