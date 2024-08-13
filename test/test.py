@@ -32,49 +32,49 @@ async def test_project(dut):
     # Wait for one clock cycle to see the output values
     await ClockCycles(dut.clk, 1)
     
-   # Set the input values you want to test //b1
+    # Set the input values you want to test //b1
     dut.ui_in.value = 0
     dut.uio_in.value = 65
 
     # Wait for one clock cycle to see the output values
     await ClockCycles(dut.clk, 1)
     
-   # Set the input values you want to test //a2
+    # Set the input values you want to test //a2
     dut.ui_in.value = 0
     dut.uio_in.value = 64
-   # Wait for one clock cycle to see the output values
+    # Wait for one clock cycle to see the output values
     await ClockCycles(dut.clk, 1)
     
-   # Set the input values you want to test //b2
+    # Set the input values you want to test //b2
     dut.ui_in.value = 0
     dut.uio_in.value = 62
 
      # Wait for one clock cycle to see the output values
     await ClockCycles(dut.clk, 1)
     
-   # Set the input values you want to test //a3
+    # Set the input values you want to test //a3
     dut.ui_in.value = 0
     dut.uio_in.value = 66
 
     # Wait for one clock cycle to see the output values
     await ClockCycles(dut.clk, 1)
     
-   # Set the input values you want to test //b3
+    # Set the input values you want to test //b3
     dut.ui_in.value = 0
     dut.uio_in.value = 62
 
-      # Wait for one clock cycle to see the output values
+    # Wait for one clock cycle to see the output values
     await ClockCycles(dut.clk, 1)
     
-   # Set the input values you want to test //a4
+    # Set the input values you want to test //a4
     dut.ui_in.value = 0
     dut.uio_in.value = 66
     # assert dut.uo_out.value == 65
 
     # Wait for one clock cycle to see the output values
     await ClockCycles(dut.clk, 1)
-  #   assert dut.uo_out.value == 0
-   # Set the input values you want to test //b4
+    #   assert dut.uo_out.value == 0
+    # Set the input values you want to test //b4
     dut.ui_in.value = 0
     dut.uio_in.value = 62
     
@@ -85,7 +85,7 @@ async def test_project(dut):
     assert dut.uo_out.value == 65
     await ClockCycles(dut.clk, 1)
     assert dut.uo_out.value == 0
-   await ClockCycles(dut.clk, 1)
+    await ClockCycles(dut.clk, 1)
     assert dut.uo_out.value == 66
     await ClockCycles(dut.clk, 1)
     assert dut.uo_out.value == 128
