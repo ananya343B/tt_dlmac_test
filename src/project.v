@@ -47,7 +47,7 @@ module reg_wrapper(
 reg [1:0] state;
 reg [15:0] temp_data;
 
-  always @(posedge clk or negedge rst_n) begin
+	always @(posedge clk or posedge !rst_n) begin
     if (!rst_n) begin
         state <= 2'b00; 
         reg_a <= 16'b0;
@@ -110,7 +110,7 @@ endmodule
   output reg [15:0]c_out;
   wire [15:0]fprod,fadd;
   
-  always @(posedge clk) begin
+	 always @(posedge clk or posedge !rst_n) begin
     if(!rst_n) begin
       c_out<=0;
     end
