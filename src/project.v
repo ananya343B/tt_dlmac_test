@@ -164,22 +164,20 @@ module dlfloat_mult(a,b,c_mul,clk);
 endmodule 
 
 module dlfloat_adder(input clk, input [15:0]a1, input [15:0]b1, output logic[15:0]c_add=0);
-    reg en=0;
+    
     reg    [15:0] Num_shift_80; 
     reg    [5:0]  Larger_exp_80,Final_expo_80;
     reg    [9:0] Small_exp_mantissa_80,S_mantissa_80,L_mantissa_80,Large_mantissa_80;
     reg    [8:0] Final_mant_80;
-    reg    [10:0] Add_mant_80,Add1_mant_80;
+  reg    [10:0] Add_mant_80=0;
+  reg [10:0] Add1_mant_80=0;
     reg    [5:0]  e1_80,e2_80;
     reg    [8:0] m1_80,m2_80;
     reg          s1_80,s2_80,Final_sign_80;
-    reg    [8:0]  renorm_shift_80;
-    integer signed   renorm_exp_80;
-  always@(posedge clk)
-    begin
-      en<=1;
-    end
-  always@(a1 or en or b1) begin
+  reg    [8:0]  renorm_shift_80=0;
+    integer signed   renorm_exp_80=0;
+  
+  always@(*) begin
         //stage 1
 	     e1_80 = a1[14:9];
 	     e2_80 = b1[14:9];
