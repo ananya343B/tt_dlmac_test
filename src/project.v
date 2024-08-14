@@ -165,24 +165,24 @@ endmodule
 
 module dlfloat_adder(input clk, input [15:0]a1, input [15:0]b1, output logic[15:0]c_add=0);
     
-  reg [15:0] Num_shift_80=0; 
-  reg [5:0]  Larger_exp_80=0;
-  reg [5:0] Final_expo_80=0;
-  reg [9:0] Small_exp_mantissa_80=0;
-  reg [9:0] S_mantissa_80=0;
-  reg [9:0] L_mantissa_80=0;
-  reg [9:0] Large_mantissa_80=0;
-  reg [8:0] Final_mant_80=0;
-  reg [10:0] Add_mant_80=0;
-  reg [10:0] Add1_mant_80=0;
-  reg [5:0]  e1_80=0;
-  reg [5:0] e2_80=0;
-  reg [8:0] m1_80=0;
-  reg [8:0] m2_80=0;
-  reg s1_80=0;
-  reg s2_80=0;
-  reg Final_sign_80=0;
-  reg [8:0] renorm_shift_80=0;
+  reg [15:0] Num_shift_80=16'b0; 
+  reg [5:0]  Larger_exp_80=6'b0;
+  reg [5:0] Final_expo_80=6'b0;
+  reg [9:0] Small_exp_mantissa_80=10'b0;
+  reg [9:0] S_mantissa_80=10'b0;
+  reg [9:0] L_mantissa_80=10'b0;
+  reg [9:0] Large_mantissa_80=10'b0;
+  reg [8:0] Final_mant_80=9'b0;
+  reg [10:0] Add_mant_80=11'b0;
+  reg [10:0] Add1_mant_80=11'b0;
+  reg [5:0]  e1_80=6'b0;
+  reg [5:0] e2_80=6'b0;
+  reg [8:0] m1_80=9'b0;
+  reg [8:0] m2_80=9'b0;
+  reg s1_80=1'b0;
+  reg s2_80=1'b0;
+  reg Final_sign_80=1'b0;
+  reg [8:0] renorm_shift_80=9'b0;
   integer signed   renorm_exp_80=0;
   
   always@(*) begin
