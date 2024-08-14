@@ -260,6 +260,9 @@ module dlfloat_adder(input clk, input [15:0]a1, input [15:0]b1, output logic[15:
       
 	 //renormalization for mantissa and exponent
      //stage 4
+	Add1_mant_80 = 0;
+	  renorm_exp_80=0;
+	  renorm_shift_80=0;
         if (Add_mant_80[10] ) begin
 		   Add1_mant_80= Add_mant_80 >> 1;
 		   renorm_exp_80 = 4'd1;
