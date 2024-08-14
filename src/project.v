@@ -185,7 +185,7 @@ module dlfloat_adder(input clk, input [15:0]a1, input [15:0]b1, output logic[15:
   reg [8:0] renorm_shift_80=9'b0;
   integer signed   renorm_exp_80=0;
   
-  always@(*) begin
+	always@(a1 or b1) begin
         //stage 1
 	     e1_80 = a1[14:9];
 	     e2_80 = b1[14:9];
