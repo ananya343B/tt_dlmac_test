@@ -91,11 +91,11 @@ reg [1:0] state;
     else begin
         case (state)
             2'b00: begin
-              c_byte <= c[7:0];
+		    c_byte <= c[15:8];
                 state <= 2'b01;
             end
             2'b01: begin
-              c_byte <= c[15:8]; 
+		    c_byte <= c[7:0]; 
                 state <= 2'b00;
             end
             default: state <= 2'b00; 
@@ -265,7 +265,10 @@ module dlfloat_adder(input clk,input [15:0] a1, input [15:0] b1,output reg [15:0
       
 	 //renormalization for mantissa and exponent
      //stage 4
-	 
+	  //to avoid latch inference
+	   renorm_exp_80=4'd0;
+	   renorm_shift_80=9'd0;
+	   Add1_mant_80=Add1_mant_80;
 	  
         if (Add_mant_80[10] ) begin
 		   Add1_mant_80= Add_mant_80 >> 1;
