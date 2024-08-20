@@ -138,7 +138,7 @@ module dlfloat_mult(a,b,c_mul,clk,rst_n);
     reg [16:0] temp;
     reg [15:0] c_mul1;
    
-	always @(posedge clk or negedge rst_n) begin
+	always @(posedge clk) begin
     if(!rst_n) begin
       c_mul<=16'b0;
     end
