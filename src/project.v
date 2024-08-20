@@ -111,7 +111,7 @@ endmodule
   output reg [15:0]c_out;
   wire [15:0]fprod,fadd;
   
-	 always @(posedge clk or negedge rst_n) begin
+	 always @(posedge clk) begin
     if(!rst_n) begin
       c_out<=0;
     end
