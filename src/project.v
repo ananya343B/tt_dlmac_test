@@ -48,7 +48,7 @@ module reg_wrapper(
 reg [1:0] state;
 reg [15:0] temp_data;
 
-	always @(posedge clk) begin
+	always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         state <= 2'b00; 
         reg_a <= 16'b0;
@@ -83,7 +83,7 @@ module out_wrapper(
 
 reg [1:0] state;
 
-	always @(posedge clk) begin
+	always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         state <= 2'b00; 
         c_byte <=8'b0;
@@ -111,7 +111,7 @@ endmodule
   output reg [15:0]c_out;
   wire [15:0]fprod,fadd;
   
-	 always @(posedge clk) begin
+	 always @(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
       c_out<=0;
     end
@@ -138,7 +138,7 @@ module dlfloat_mult(a,b,c_mul,clk,rst_n);
     reg [16:0] temp;
     reg [15:0] c_mul1;
    
-  always @(posedge clk) begin
+	always @(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
       c_mul<=16'b0;
     end
