@@ -122,7 +122,7 @@ endmodule
   end
 	
 	 dlfloat_mult mul(a,b,fprod,clk,rst_n);
-	 dlfloat_adder add(clk,rst_in,fprod,c_out,fadd);
+	 dlfloat_adder add(clk,rst_n,fprod,c_out,fadd);
 
 endmodule 
 
@@ -186,7 +186,7 @@ module dlfloat_mult(a,b,c_mul,clk,rst_n);
     end 
 endmodule 
 
-module dlfloat_adder(input clk,input rst_in,input [15:0] a1, input [15:0] b1,output reg [15:0] c_add);
+module dlfloat_adder(input clk,input rst_n,input [15:0] a1, input [15:0] b1,output reg [15:0] c_add);
 
    	
     reg    [15:0] Num_shift_80; 
