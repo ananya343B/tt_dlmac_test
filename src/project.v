@@ -45,15 +45,14 @@ module reg_wrapper(
     output reg [15:0] reg_b
 );
 
-	reg [1:0] state;
+reg [1:0] state;
 reg [15:0] temp_data;
 
-	always @(posedge clk or negedge rst_n) begin
+  always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         state <= 2'b00; 
         reg_a <= 16'b0;
         reg_b <= 16'b0;
-	
     end
     else begin
         case (state)
@@ -84,7 +83,7 @@ module out_wrapper(
 
 reg [1:0] state;
 
-	always @(posedge clk or negedge rst_n) begin
+  always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         state <= 2'b00; 
         c_byte <=8'b0;
@@ -112,7 +111,7 @@ endmodule
   output reg [15:0]c_out;
   wire [15:0]fprod,fadd;
   
-	 always @(posedge clk) begin
+  always @(posedge clk) begin
     if(!rst_n) begin
       c_out<=0;
     end
@@ -122,7 +121,7 @@ endmodule
   end
 	
 	 dlfloat_mult mul(a,b,fprod,clk,rst_n);
-	 dlfloat_adder add(clk,fprod,c_out,fadd);
+  dlfloat_adder add(clk,fprod,c_out,fadd);
 
 endmodule 
 
@@ -139,7 +138,7 @@ module dlfloat_mult(a,b,c_mul,clk,rst_n);
     reg [16:0] temp;
     reg [15:0] c_mul1;
    
-	always @(posedge clk) begin
+  always @(posedge clk) begin
     if(!rst_n) begin
       c_mul<=16'b0;
     end
@@ -173,7 +172,7 @@ module dlfloat_mult(a,b,c_mul,clk,rst_n);
     end 
 endmodule 
 
-module dlfloat_adder(input clk,input [15:0] a1, input [15:0] b1,output reg [15:0] c_add);
+module dlfloat_adder(input clk,input [15:0] a1, input [15:0] b1,output reg [15:0] c_add=0);
 
    	
     reg    [15:0] Num_shift_80; 
@@ -189,7 +188,7 @@ module dlfloat_adder(input clk,input [15:0] a1, input [15:0] b1,output reg [15:0
   	
    
     
-  always@(*) begin		  
+  always@(*) begin
         //stage 1
 	     e1_80 = a1[14:9];
 	     e2_80 = b1[14:9];
@@ -349,7 +348,6 @@ module dlfloat_adder(input clk,input [15:0] a1, input [15:0] b1,output reg [15:0
       else begin
         c_add = (a1==0 & b1==0)?0:{Final_sign_80,Final_expo_80,Final_mant_80};
       end 
-
     end 
     
 endmodule
