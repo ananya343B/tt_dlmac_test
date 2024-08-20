@@ -45,7 +45,7 @@ module reg_wrapper(
     output reg [15:0] reg_b
 );
 
-reg [1:0] state;
+	reg [1:0] state;
 reg [15:0] temp_data;
 
 	always @(posedge clk or negedge rst_n) begin
@@ -53,6 +53,7 @@ reg [15:0] temp_data;
         state <= 2'b00; 
         reg_a <= 16'b0;
         reg_b <= 16'b0;
+	temp_data <=16'b0;
     end
     else begin
         case (state)
@@ -141,6 +142,19 @@ module dlfloat_mult(a,b,c_mul,clk,rst_n);
 	always @(posedge clk) begin
     if(!rst_n) begin
       c_mul<=16'b0;
+ 	ma<=10'b0;
+	mb<=10'b0;
+	mant<=9'b0;
+	m_temp<=20'b0;
+	ea<=6'b0;
+	eb<=6'b0;
+	e_temp<=6'b0;
+	exp<=6'b0;
+	sa<=1'b0;
+	sb<=1'b0;
+	s<=1'b0;
+	temp<=17'b0;
+	c_mul1<=16'b0;
     end
     else begin
       c_mul<=c_mul1;
@@ -172,7 +186,7 @@ module dlfloat_mult(a,b,c_mul,clk,rst_n);
     end 
 endmodule 
 
-module dlfloat_adder(input clk,input [15:0] a1, input [15:0] b1,output reg [15:0] c_add=0);
+module dlfloat_adder(input clk,input [15:0] a1, input [15:0] b1,output reg [15:0] c_add);
 
    	
     reg    [15:0] Num_shift_80; 
@@ -189,6 +203,29 @@ module dlfloat_adder(input clk,input [15:0] a1, input [15:0] b1,output reg [15:0
    
     
   always@(*) begin
+	  if(!rst_n) begin
+		Num_shift_80<=16'b0;
+		Larger_exp_80<=6'b0;
+		Final_expo_80<=6'b0;
+		Small_exp_mantissa_80<=10'b0;
+		S_mantissa_80<=10'b0;
+		L_mantissa_80<=10'b0;
+		Large_mantissa_80<=10'b0;
+		Final_mant_80<=9'b0;
+		Add_mant_80<=11'b0;
+		Add1_mant_80<=11'b0;
+		e1_80<=6'b0;
+		e2_80<=6'b0;
+		m1_80<=9'b0;
+		m2_80<=9'b0;
+		s1_80<=1'b0;
+		s2_80<=1'b0;
+		Final_sign_80<=1'b0;
+		renorm_shift_80<=9'b0;
+		renorm_exp_80<=0;
+	  end
+	  else begin
+			  
         //stage 1
 	     e1_80 = a1[14:9];
 	     e2_80 = b1[14:9];
@@ -348,6 +385,7 @@ module dlfloat_adder(input clk,input [15:0] a1, input [15:0] b1,output reg [15:0
       else begin
         c_add = (a1==0 & b1==0)?0:{Final_sign_80,Final_expo_80,Final_mant_80};
       end 
+    end
     end 
     
 endmodule
