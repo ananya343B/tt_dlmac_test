@@ -219,9 +219,7 @@ module dlfloat_adder(input clk,input [15:0] a1, input [15:0] b1,output reg [15:0
 	      if (e1_80 == 0 | e2_80 ==0) begin
 	        Num_shift_80 = 0;
 	      end
-	      else begin
-	        Num_shift_80 = Num_shift_80;
-	      end
+	      
       
         
         //stage 2
@@ -229,16 +227,12 @@ module dlfloat_adder(input clk,input [15:0] a1, input [15:0] b1,output reg [15:0
 	    if (e1_80 != 0) begin
 	      Small_exp_mantissa_80  = (Small_exp_mantissa_80 >> Num_shift_80);
         end
-	    else begin
-	      Small_exp_mantissa_80 = Small_exp_mantissa_80;
-	    end
+	    
 
 	    if (e2_80!= 0) begin
             Large_mantissa_80 = Large_mantissa_80;
 	    end
-	    else begin
-	       Large_mantissa_80 = Large_mantissa_80;
-	    end	
+	    
               
        //stage 3
        //add the mantissas
