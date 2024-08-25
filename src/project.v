@@ -136,7 +136,8 @@ module dlfloat_mult(a,b,c_mul,clk,rst_n);
     reg [9:0]ma,mb; //1 extra because 1.smthng
     reg [8:0] mant;
     reg [19:0]m_temp; //after multiplication
-    reg [5:0] ea,eb,e_temp,exp;
+    reg [5:0] ea,eb,exp;
+	reg [6:0] exp_temp;
     reg sa,sb,s;
     reg [16:0] temp;
     reg [15:0] c_mul1;
@@ -160,9 +161,14 @@ module dlfloat_mult(a,b,c_mul,clk,rst_n);
 	
         e_temp = ea + eb - 31;
         m_temp = ma * mb;
-		
+		exp_temp = m_temp[19] ? e_temp+1'b1 : e_temp;
+		if((exp_temp>31) | (exp_temp< -30)) begin
+			exp = 6'b111111;
+		end
+		else
+			exp = exp_temp[5:0];
         mant = m_temp[19] ? m_temp[18:10] : m_temp[17:9];
-        exp = m_temp[19] ? e_temp+1'b1 : e_temp;
+        
 		
         s=sa ^ sb;
          if( a==16'hFFFF | b==16'hFFFF ) begin
@@ -342,6 +348,9 @@ module dlfloat_adder(input clk,input [15:0] a1, input [15:0] b1,output reg [15:0
       if( a1==16'hFFFF | b1==16'hFFFF) begin
         c_add = 16'hFFFF;
       end
+	  else if (e1_80 == 6'b111111 | e2_80 == 6'b111111) begin
+		  c_add = 16'hFFFF;
+	  end
       else begin
         c_add = (a1==0 & b1==0)?0:{Final_sign_80,Final_expo_80,Final_mant_80};
       end 
