@@ -159,9 +159,9 @@ module dlfloat_mult(a,b,c_mul,clk,rst_n);
         ea = a[14:9];
         eb = b[14:9];
 	
-        e_temp = ea + eb - 31;
+        exp_temp = ea + eb - 31;
         m_temp = ma * mb;
-		exp_temp = m_temp[19] ? e_temp+1'b1 : e_temp;
+		exp_temp = m_temp[19] ? exp_temp+1'b1 : exp_temp;
 		if((exp_temp>31) | (exp_temp< -30)) begin
 			exp = 6'b111111;
 		end
