@@ -174,6 +174,9 @@ module dlfloat_mult(a,b,c_mul,clk,rst_n);
          if( a==16'hFFFF | b==16'hFFFF ) begin
         c_mul1 =16'hFFFF;
       end
+		else if (exp == 6'b111111) begin
+			c_mul1 = 16'hFFFF;
+		end
       else begin
         c_mul1 = (a==0 | b==0) ? 0 :{s,exp,mant};
       end 
@@ -348,9 +351,7 @@ module dlfloat_adder(input clk,input [15:0] a1, input [15:0] b1,output reg [15:0
       if( a1==16'hFFFF | b1==16'hFFFF) begin
         c_add = 16'hFFFF;
       end
-	  else if (e1_80 == 6'b111111 | e2_80 == 6'b111111) begin
-		  c_add = 16'hFFFF;
-	  end
+	  
       else begin
         c_add = (a1==0 & b1==0)?0:{Final_sign_80,Final_expo_80,Final_mant_80};
       end 
