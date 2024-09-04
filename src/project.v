@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2024 Your Name
  * SPDX-License-Identifier: Apache-2.0
@@ -40,9 +39,9 @@ wire _unused = &{ena, 1'b0};
 endmodule
 
 module reg_wrapper(
-    input clk,
-    input rst_n,
-    input [15:0] data_in,
+    input wire clk,
+    input wire rst_n,
+    input wire [15:0] data_in,
     output reg [15:0] reg_a,
     output reg [15:0] reg_b
 );
@@ -78,9 +77,9 @@ end
 endmodule
 
 module out_wrapper(
-    input clk,
-    input rst_n,
-  input [15:0] c,
+    input wire clk,
+    input wire rst_n,
+  input wire [15:0] c,
   output reg [7:0] c_byte
 );
 
@@ -109,8 +108,8 @@ end
 endmodule
 
  module dlfloat_mac(clk,rst_n,a,b,c_out);
-    input [15:0]a,b;
-    input clk,rst_n;
+    input wire [15:0]a,b;
+    input wire clk,rst_n;
   output reg [15:0]c_out;
   wire [15:0]fprod,fadd;
   
@@ -129,15 +128,14 @@ endmodule
 endmodule 
 
 module dlfloat_mult(a,b,c_mul,clk,rst_n);
-    input  [15:0]a,b;
-    input clk,rst_n;
+    input wire [15:0]a,b;
+    input wire clk,rst_n;
     output  reg[15:0]c_mul;
     
     reg [9:0]ma,mb; //1 extra because 1.smthng
     reg [8:0] mant;
     reg [19:0]m_temp; //after multiplication
-    reg [5:0] ea,eb,exp;
-	reg [6:0] exp_temp;
+    reg [5:0] ea,eb,e_temp,exp;
     reg sa,sb,s;
     reg [16:0] temp;
     reg [15:0] c_mul1;
@@ -158,33 +156,44 @@ module dlfloat_mult(a,b,c_mul,clk,rst_n);
         sb = b[15];
         ea = a[14:9];
         eb = b[14:9];
-	
-        exp_temp = ea + eb - 31;
+  	
+       //to avoid latch inference
+  	e_temp = 6'b0;
+  	m_temp = 20'b0;
+  	mant=9'b0;
+  	exp= 6'b0;
+  	s=0;
+  	
+  	//checking for underflow/overflow
+    if (  (ea + eb) <= 31 ) begin
+  		c_mul1=16'b0;//pushing to zero on underflow
+  	end
+    else if ( (ea + eb) > 94) begin
+          c_mul1=16'h7DFE;//pushing to largest +ve number on overflow
+        end
+  	else if ( (ea + eb) == 94 ) begin
+		c_mul1=16'hFFFF;//pushing to inf if exp is all ones
+ 	end
+        else begin	
+        e_temp = ea + eb - 31;
         m_temp = ma * mb;
-		exp_temp = m_temp[19] ? exp_temp+1'b1 : exp_temp;
-		if((exp_temp>31) | (exp_temp< -30)) begin
-			exp = 6'b111111;
-		end
-		else
-			exp = exp_temp[5:0];
+ 		
         mant = m_temp[19] ? m_temp[18:10] : m_temp[17:9];
-        
-		
+        exp = m_temp[19] ? e_temp+1'b1 : e_temp;	
         s=sa ^ sb;
+ 		
+ 	//checking for special cases	
          if( a==16'hFFFF | b==16'hFFFF ) begin
-        c_mul1 =16'hFFFF;
-      end
-		else if (exp == 6'b111111) begin
-			c_mul1 = 16'hFFFF;
-		end
-      else begin
-        c_mul1 = (a==0 | b==0) ? 0 :{s,exp,mant};
-      end 
- 
+            c_mul1 =16'hFFFF;
+         end
+        else begin
+           c_mul1 = (a==0 | b==0) ? 0 :{s,exp,mant};
+         end 
+ 	end 
     end 
 endmodule 
 
-module dlfloat_adder(input clk,input [15:0] a1, input [15:0] b1,output reg [15:0] c_add=0);
+module dlfloat_adder(input wire clk,input wire [15:0] a1, input wire [15:0] b1,output reg [15:0] c_add=0);
 
    	
     reg    [5:0] Num_shift_80; 
@@ -197,7 +206,7 @@ module dlfloat_adder(input clk,input [15:0] a1, input [15:0] b1,output reg [15:0
     reg          s1_80,s2_80,Final_sign_80;
     reg    [8:0]  renorm_shift_80;
     reg signed [5:0] renorm_exp_80;
-  	
+    reg signed [5:0] larger_expo_neg;	
    
     
   always@(*) begin
@@ -228,20 +237,16 @@ module dlfloat_adder(input clk,input [15:0] a1, input [15:0] b1,output reg [15:0
 	      if (e1_80 == 0 | e2_80 ==0) begin
 	        Num_shift_80 = 0;
 	      end
-	      
+	      else begin
+	        Num_shift_80 = Num_shift_80;
+	      end
       
         
         //stage 2
         // append 1 and shift
-	    if (e1_80 != 0) begin
+	    
 	      Small_exp_mantissa_80  = (Small_exp_mantissa_80 >> Num_shift_80);
-        end
-	    
-
-	    if (e2_80!= 0) begin
-            Large_mantissa_80 = Large_mantissa_80;
-	    end
-	    
+        
               
        //stage 3
        //add the mantissas
@@ -325,36 +330,60 @@ module dlfloat_adder(input clk,input [15:0] a1, input [15:0] b1,output reg [15:0
         
         end
      
-        Final_expo_80 = 6'd0;//to avoid latch inference
-        Final_expo_80 =  Larger_exp_80 + renorm_exp_80;
-	 Final_mant_80 = 9'd0;//to avoid latch inference
-        Final_mant_80 = Add1_mant_80[8:0]; 
-
-	  Final_sign_80=0;//to avoid latch inference
-	   if (s1_80 == s2_80) begin
+           Final_expo_80 = 6'd0;//to avoid latch inference
+	  Final_mant_80 = 9'd0;//to avoid latch inference  
+	  Final_sign_80=0;//to avoid latch inference 
+	  larger_expo_neg = -Larger_exp_80;
+           //checking for overflow/underflow
+           if(  Larger_exp_80 == 63 && renorm_exp_80 == 1) begin //overflow
+                c_add=16'h7DFE;//largest +ve value
+           end
+           else if ((Larger_exp_80 >= 1) && (Larger_exp_80 <= 8) && (renorm_exp_80 <  larger_expo_neg)) begin //underflow
+               c_add=16'd513;//smallest +ve value
+            end 
+           else begin
+      	   
+               Final_expo_80 =  Larger_exp_80 + renorm_exp_80;
+      
+      	       if(Final_expo_80 == 6'b0) begin
+                     c_add=16'b0;
+               end
+               else if( Final_expo_80 == 63) begin
+                     c_add=16'hFFFF;
+               end      
+	      
+               Final_mant_80 = Add1_mant_80[8:0]; 
+	       //calculating final sign	   
+	       if (s1_80 == s2_80) begin
 		  Final_sign_80 = s1_80;
-	   end 
-
-	   if (e1_80 > e2_80) begin
-		  Final_sign_80 = s1_80;	
-	   end else if (e2_80 > e1_80) begin
-		  Final_sign_80 = s2_80;
-	   end
-	  else begin
-
-		if (m1_80 > m2_80) begin
+	       end 
+	       else begin   //if sign is different
+	          if (e1_80 > e2_80) begin
+	       	     Final_sign_80 = s1_80;	
+	          end 
+	          else if (e2_80 > e1_80) begin
+		     Final_sign_80 = s2_80;
+	          end
+	          else begin
+                     if (m1_80 > m2_80) begin
 			Final_sign_80 = s1_80;		
-		end else begin
+		     end
+		     else if (m1_80 < m2_80) begin
 			Final_sign_80 = s2_80;
-		end
-      end	
-      if( a1==16'hFFFF | b1==16'hFFFF) begin
-        c_add = 16'hFFFF;
-      end
-	  
-      else begin
-        c_add = (a1==0 & b1==0)?0:{Final_sign_80,Final_expo_80,Final_mant_80};
-      end 
-    end 
+		     end
+		     else begin
+		       Final_sign_80 = 0;
+		     end	  
+                  end
+	       end
+               //checking for special cases
+               if( a1==16'hFFFF | b1==16'hFFFF) begin
+                 c_add = 16'hFFFF;
+               end
+               else begin
+                 c_add = (a1==0 & b1==0)?0:{Final_sign_80,Final_expo_80,Final_mant_80};
+               end 
+           end//for overflow/underflow 
+  end //for always block 
     
 endmodule
