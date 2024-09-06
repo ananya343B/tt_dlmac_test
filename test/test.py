@@ -83,11 +83,18 @@ async def test_project(dut):
     #2ND SET OUTPUT VERIF MSB
     assert dut.uo_out.value == 66 
     
-    
+    ##########6TH SET#########
+    #set input a=1.32
+    dut.ui_in.value = a3
+    dut.uio_in.value = 3e
    #OUTPUT VERIF
-    ##########3RD SET#############
+    ##########3RD SET output MSB#############
     await ClockCycles(dut.clk, 1)
     assert dut.uo_out.value == 64
+    # 6th set input b=2.45
+    dut.ui_in.value = 73
+    dut.uio_in.value = 40
+    # 3rd set output LSB
     await ClockCycles(dut.clk, 1)
     assert dut.uo_out.value == 68
     ##########4TH SET#############
@@ -100,6 +107,11 @@ async def test_project(dut):
     assert dut.uo_out.value == 64
     await ClockCycles(dut.clk, 1)
     assert dut.uo_out.value == 69
+    #####6th set output
+    await ClockCycles(dut.clk, 1)
+    assert dut.uo_out.value == 46
+    await ClockCycles(dut.clk, 1)
+    assert dut.uo_out.value == 07
 
    
     
